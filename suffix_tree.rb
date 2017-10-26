@@ -26,13 +26,15 @@ class Array
   end
 end
 
+require 'pry'
+
 class SuffixTree
-  
+
   # node =  [ suffix_link, parent, edges  ]
   # edges = { first_char => edge }
   # edge =  [ range, node ]
-  # range = [ first, last ] # corresponds to interval  [ first, last ) 
-  
+  # range = [ first, last ] # corresponds to interval  [ first, last )
+
   def initialize(text)
     $text = @text = text
     @joker_edge = [[0,1]]
@@ -42,7 +44,7 @@ class SuffixTree
     @infty = @text.size
     build_tree(@root, 0, @infty)
   end
-     
+
   def build_tree(node, n, infty, skip=0)
     #puts "ENTER #{[node.name, @text[n...infty]].inspect}"
     while n < infty
@@ -61,6 +63,7 @@ class SuffixTree
         while i < last && n < infty && (@text[i]==@text[n] || edge==@joker_edge)
           i += 1; n += 1
         end
+
         if i == last
           # came to the next node
           puts "NEXT NODE #{@text[n0...n]}+#{@text[n...infty]}:  #{node.name} -> #{edge[1].name}"
@@ -88,7 +91,7 @@ class SuffixTree
     #puts "OUT #{node.name}"
     node
   end
-  
+
   # pretty print
   def pp(node=nil, indent = 0)
     node ||= @root
@@ -96,17 +99,17 @@ class SuffixTree
     puts  space + "ID    : #{node.name}"
     puts  space + "link  : #{node[0].name}"
     # puts  space + "parent: #{node[1].name}"
-    puts  space + "edges : " 
+    puts  space + "edges : "
     if node == @joker
       puts  space + "  — JOKER"
     else
       node[2].each do |k,v|
-        puts  space + "  -#{k.to_i.chr} [#{v[0][0]},#{v[0][1]})=#{@text[ v[0][0]...v[0][1] ] }:" 
+        puts  space + "  -#{k.to_i.chr} [#{v[0][0]},#{v[0][1]})=#{@text[ v[0][0]...v[0][1] ] }:"
         pp(v[1], indent + 1)
       end
     end
   end
-  
+
   def search(word)
     node = @root
     n = 0
@@ -131,9 +134,8 @@ class SuffixTree
     end
     n == infty ?  i - infty : nil
   end
-  
 end
 
-text = "abrababb"
-tree = SuffixTree.new(text)
-tree.pp
+# text = "abrababb"
+# tree = SuffixTree.new(text)
+# tree.pp
